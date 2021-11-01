@@ -3,6 +3,7 @@ package pacman;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.Random;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,7 +39,11 @@ public class Map {
     public void generatePoint(){
         for(int i =0; i < this.sizeMapHeight; i++) {
             for (int j = 0; j < this.sizeMapWidth; j++) {
-                p[i][j] = new Point(i, j, j+i, true);
+                Random r = new Random();
+                double randomWall = r.nextInt((10) + 1) + 0;
+                boolean wall = false;
+                if(randomWall >= 7) wall = true;
+                p[i][j] = new Point(i, j, j+i, wall);
                 listNoeud.add(p[i][j]);
             }
         }
