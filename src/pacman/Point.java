@@ -56,7 +56,7 @@ public class Point {
     }
 
     public String getCoord() {
-        return "["+this.getX()+", "+this.getY()+"]";
+        return "["+this.getX()+", "+this.getY()+", wall : "+ this.isIfValide()+"]";
     }
 
     public float getHeuristic() {
@@ -66,4 +66,5 @@ public class Point {
     public void setHeuristic(float heuristic) {
         this.heuristic = heuristic;
     }
+    public boolean isIfValide() {return ifValide;}
 }
