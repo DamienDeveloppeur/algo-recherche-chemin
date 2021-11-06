@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Map {
     private ArrayList<String> map = new ArrayList<>();
-    private ArrayList<Point> caseChecked = new ArrayList<>();
+    private ArrayList<Point> caseChecked = new ArrayList();
     private ArrayList<Point> rightPath = new ArrayList();
     private ArrayList<Point> listNoeud = new ArrayList<>();
     private float sizeRightPath;
@@ -38,21 +38,27 @@ public class Map {
     public void generatePoint(){
         for(int i =0; i < this.sizeMapHeight; i++) {
             for (int j = 0; j < this.sizeMapWidth; j++) {
-                Random r = new Random();
-                double randomWall = r.nextInt((10) + 1) + 0;
-                boolean wall = false;
-                if(randomWall <= 8) wall = true;
+                boolean wall = true;
+                if(j == 3) {
+                    if (i == 1 || i == 2 || i == 3) {
+                        wall = false;
+                    }
+                }
+                if(j == 2 && i == 3) wall = false;
+                if(j == 1 && i == 3) wall = false;
+                if(j == 0 && i == 1) wall = false;
+
                 p[i][j] = new Point(i, j, j+i, wall);
                 listNoeud.add(p[i][j]);
             }
         }
         //startPoint = p[this.randInt()][this.randInt()];
-        //endPoint = p[this.randInt()][this.randInt()];
+        endPoint = p[4][3];
          startPoint = p[0][0];
         //System.out.println(endPoint);
-        while(endPoint == null){
-            if(p[this.randInt()][this.randInt()].isIfValide()) endPoint = p[this.randInt()][this.randInt()];
-        }
+//        while(endPoint == null){
+//            if(p[this.randInt()][this.randInt()].isIfValide()) endPoint = p[this.randInt()][this.randInt()];
+//        }
 
         System.out.println(Map.endPoint.getCoord());
     }
@@ -77,37 +83,77 @@ public class Map {
         currentPoint = startPoint;
     System.out.println("______________________________________________________");
         while(!pathFind){
-            for(Point p3 : rightPath) {
-                System.out.println(p3.getCoord());
-            }
-            currentPoint = null;
-            caseChecked = null;
+//            for(Point p2 : listNoeud) {
+//                System.out.println(p2.getCoord());
+//            }
+
+            boolean caseFinded = false;
+//            for(Point p3 : rightPath) {
+//                System.out.println(p3.getCoord());
+//            }
+            caseChecked.clear();
             // on check chaque case, on place ainsi chaque case checké dans une liste
             // on a un point de tête, bloquing queue
             // on compare l'heuristique de chaque
             for(Point p2 : listNoeud){
-                // si un point est plus proche
-                caseChecked.add(p2);
-                if(p2.getHeuristic() < currentPoint.getHeuristic() &&
-                        Math.abs(p2.getX() - currentPoint.getX()) <= 1 && Math.abs(p2.getY() - currentPoint.getY()) <= 1 &&
-                        p2.isIfValide()) {
-                    if(p2.equals(endPoint)) {
-                        pathFind = true;
-                        System.out.println("FINISH");
-                        for(Point p3 : rightPath) {
-                            System.out.println(p3.getCoord());
+                if(!rightPath.contains(p2)) {
+                    caseChecked.add(p2);
+                    if(p2.getHeuristic() < currentPoint.getHeuristic() &&
+                            p2.getX() - currentPoint.getX() <= 1 &&
+                            p2.getY() - currentPoint.getY() <= 1 &&
+                            p2.isIfValide() &&
+                            (p2.getX() - currentPoint.getX() == 0 ||
+                             p2.getY() - currentPoint.getY() == 0)
+                    ) {
+                        System.out.println("p2.getX() - currentPoint.getX() : " + (p2.getX() - currentPoint.getX()));
+                        System.out.println("p2.getY() - currentPoint.getY() : "+(p2.getY() - currentPoint.getY()));
+                        System.out.println("Current point : "+(currentPoint.getCoord()));
 
+
+                        if(p2.equals(endPoint)) {
+                            pathFind = true;
+                            System.out.println("FINISH");
+                            for(Point p3 : rightPath) {System.out.println(p3.getCoord());}
+                            return;
                         }
-                        return;
+                        rightPath.add(p2);
+                        currentPoint = p2;
+                        caseFinded = true;
                     }
-                    currentPoint = p2;
-                    rightPath.add(p2);
                 }
-            }
-            if(currentPoint.equals(null)) {
-                for(Point p3 : caseChecked){
 
+
+            }
+            if(!caseFinded) {
+                System.out.println("case checkec 0 : " + caseChecked.get(0).getHeuristic());
+                for(Point p3 : rightPath) {
+                    System.out.println(p3.getCoord());
                 }
+                float min =  caseChecked.get(0).getHeuristic();
+                Point pointToPush = caseChecked.get(0);
+                for(int i = 0; i < caseChecked.size(); i++) {
+                    if(caseChecked.get(i).getHeuristic() < min &&
+                        (caseChecked.get(i).getX() - currentPoint.getX() <= 1) &&
+                        (caseChecked.get(i).getY() - currentPoint.getY() <= 1) &&
+                        caseChecked.get(i).isIfValide() &&
+                            (caseChecked.get(i).getX() - currentPoint.getX() == 0 ||
+                            caseChecked.get(i).getY() - currentPoint.getY() == 0)
+
+                    ) {
+                        if(caseChecked.get(i).equals(endPoint)) {
+                            pathFind = true;
+                            System.out.println("FINISH");
+                            for(Point p3 : rightPath) {System.out.println(p3.getCoord());}
+                            return;
+                        }
+                        min = caseChecked.get(i).getHeuristic();
+                        pointToPush = caseChecked.get(i);
+                    }
+                }
+                if(!rightPath.contains(pointToPush)) {
+                    caseChecked.add(pointToPush);
+                }
+                currentPoint = pointToPush;
             }
         }
         // code en python

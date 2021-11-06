@@ -9,6 +9,19 @@ public class Point {
     private boolean ifValide;
     private float heuristic;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Point)) return false;
+        Point point1 = (Point) o;
+        return getX() == point1.getX() && getY() == point1.getY() && getPoint() == point1.getPoint() && isIfValide() == point1.isIfValide();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY(), getPoint(), isIfValide());
+    }
+
     Point(int x, int y, int point, boolean ifValide){
         this.x = x;
         this.y = y;
@@ -20,19 +33,6 @@ public class Point {
 
     public int getX() {
         return x;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Point)) return false;
-        Point point1 = (Point) o;
-        return getX() == point1.getX() && getY() == point1.getY() && getPoint() == point1.getPoint() && ifValide == point1.ifValide;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getX(), getY(), getPoint(), ifValide);
     }
 
     public void setX(int x) {
@@ -56,7 +56,7 @@ public class Point {
     }
 
     public String getCoord() {
-        return "["+this.getX()+", "+this.getY()+", wall : "+ this.isIfValide()+"]";
+        return "["+this.getX()+", "+this.getY()+", ifValide : "+ this.isIfValide()+"]";
     }
 
     public float getHeuristic() {
