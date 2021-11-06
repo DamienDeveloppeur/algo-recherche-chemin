@@ -87,6 +87,7 @@ public class Map {
 //                System.out.println(p2.getCoord());
 //            }
 
+
             boolean caseFinded = false;
 //            for(Point p3 : rightPath) {
 //                System.out.println(p3.getCoord());
@@ -97,7 +98,6 @@ public class Map {
             // on compare l'heuristique de chaque
             for(Point p2 : listNoeud){
                 if(!rightPath.contains(p2)) {
-                    caseChecked.add(p2);
                     if(p2.getHeuristic() < currentPoint.getHeuristic() &&
                             p2.getX() - currentPoint.getX() <= 1 &&
                             p2.getY() - currentPoint.getY() <= 1 &&
@@ -105,20 +105,21 @@ public class Map {
                             (p2.getX() - currentPoint.getX() == 0 ||
                              p2.getY() - currentPoint.getY() == 0)
                     ) {
-                        System.out.println("p2.getX() - currentPoint.getX() : " + (p2.getX() - currentPoint.getX()));
-                        System.out.println("p2.getY() - currentPoint.getY() : "+(p2.getY() - currentPoint.getY()));
+                        System.out.println("REGULAR p2.getX() - currentPoint.getX() : " + (p2.getX() - currentPoint.getX()));
+                        System.out.println("REGULAR p2.getY() - currentPoint.getY() : "+(p2.getY() - currentPoint.getY()));
                         System.out.println("Current point : "+(currentPoint.getCoord()));
-
-
+                        rightPath.add(p2);
+                        currentPoint = p2;
+                        caseFinded = true;
                         if(p2.equals(endPoint)) {
                             pathFind = true;
                             System.out.println("FINISH");
                             for(Point p3 : rightPath) {System.out.println(p3.getCoord());}
                             return;
                         }
-                        rightPath.add(p2);
-                        currentPoint = p2;
-                        caseFinded = true;
+
+                    } else {
+                        caseChecked.add(p2);
                     }
                 }
 
@@ -126,9 +127,7 @@ public class Map {
             }
             if(!caseFinded) {
                 System.out.println("case checkec 0 : " + caseChecked.get(0).getHeuristic());
-                for(Point p3 : rightPath) {
-                    System.out.println(p3.getCoord());
-                }
+
                 float min =  caseChecked.get(0).getHeuristic();
                 Point pointToPush = caseChecked.get(0);
                 for(int i = 0; i < caseChecked.size(); i++) {
@@ -140,6 +139,9 @@ public class Map {
                             caseChecked.get(i).getY() - currentPoint.getY() == 0)
 
                     ) {
+                        System.out.println("IN CASECHECKED p2.getX() - currentPoint.getX() : " + (caseChecked.get(i).getX() - currentPoint.getX()));
+                        System.out.println("IN CASE CHECKED p2.getY() - currentPoint.getY() : "+(caseChecked.get(i).getY() - currentPoint.getY()));
+                        System.out.println("Current point BEFORE: "+(currentPoint.getCoord()));
                         if(caseChecked.get(i).equals(endPoint)) {
                             pathFind = true;
                             System.out.println("FINISH");
@@ -151,9 +153,14 @@ public class Map {
                     }
                 }
                 if(!rightPath.contains(pointToPush)) {
-                    caseChecked.add(pointToPush);
+                    rightPath.add(pointToPush);
+                    currentPoint = pointToPush;
                 }
-                currentPoint = pointToPush;
+                System.out.println("Current point AFTER: "+(currentPoint.getCoord()));
+                for(Point p3 : rightPath) {
+                    System.out.println(p3.getCoord());
+                }
+
             }
         }
         // code en python
